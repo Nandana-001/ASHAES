@@ -1,0 +1,103 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <title>Smart Learn</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/templatemo-style.css' %}" rel="stylesheet">
+  </head>
+  <body>  
+    <div class="templatemo-flex-row">
+      <div class="templatemo-sidebar">
+        <header class="templatemo-site-header">
+          <div class="square"></div>
+          <h1>Student Dashboard</h1>
+        </header>
+        <div class="profile-photo-container">
+          <img style="padding-left: 23px;" src="{% static 'images/icon.png' %}" alt="Profile Photo" class="img-responsive">  
+        </div>      
+        
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="templatemo-left-nav">          
+          <ul>
+            <li><a href="{% url 'index' %}" ><i class="fa fa-home fa-fw"></i>Home</a></li>
+            <li><a href="{% url 'profile' %}" class="active"><i class="fa fa-bars fa-fw"></i>Profile</a></li>
+            <li><a href="{% url 'student_submit' %}"><i class="fa fa-chart-line fa-fw"></i>Submit Exam</a></li>
+            <li><a href="{% url 'evaluate' %}"><i class="fa fa-chart-line fa-fw"></i>Score</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="fa fa-eject"></i>Sign Out</a></li>            
+          </ul>  
+        </nav>
+      </div>
+      <div style="
+       background-size: 800px auto; 
+       background-position: left 700px center; 
+       background-repeat: no-repeat; 
+       height: 100vh;"
+
+           class="templatemo-content col-1 light-gray-bg">
+           
+        <div class="templatemo-top-nav-container">
+          <div class="row">
+            <nav class="templatemo-top-nav col-lg-12 col-md-12">
+              <ul class="text-uppercase">
+                <h2 style="font-size: 24px; font-weight: 600; text-align: center;" class="text-uppercase">Smart Learn</h2>
+              </ul>  
+            </nav> 
+          </div>
+        </div>
+
+    <div class="templatemo-content col-1 light-gray-bg">
+        <div class="container mt-5">
+            <h2 class="text-center">My Profile</h2>
+            <form method="POST" action="{% url 'profile_view' %}" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="full_name">Full Name:</label>
+                    <input type="text" id="full_name" name="full_name" class="form-control"
+                           value="{{ student.full_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="roll_no">Roll No:</label>
+                    <input type="text" id="roll_no" name="roll_no" class="form-control" value="{{ student.roll_no }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ student.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">New Password (Optional):</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter new password">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+ <footer class="text-right" style="position: absolute; bottom: 20px; right: 20px; color: azure;">
+          <p>Copyright &copy; 2024 Smart Learn| All Rights Reserved</p>
+        </footer>         
+      </div>
+    </div>
+    
+    <!-- JS -->
+    <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>    
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script> 
+    <script src="https://www.google.com/jsapi"></script> 
+    
+    <script type="text/javascript" src="{% static 'js/templatemo-script.js' %}"></script>      
+
+  </body>
+</html>
+

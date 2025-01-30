@@ -1,0 +1,190 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <title>Smart Learn</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/templatemo-style.css' %}" rel="stylesheet">
+    <style>
+      .score-card {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        width: 400px;
+        display: none; /* Hidden by default */
+        z-index: 1000;
+      }
+      .score-card h5 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+      }
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>  
+    <div class="templatemo-flex-row">
+      <div class="templatemo-sidebar">
+        <!-- Sidebar content -->
+        <header class="templatemo-site-header">
+          <div class="square"></div>
+          <h1>Student Dashboard</h1>
+        </header>
+        <div class="profile-photo-container">
+          <img style="padding-left: 23px;" src="{% static 'images/icon.png' %}" alt="Profile Photo" class="img-responsive">  
+        </div>      
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="templatemo-left-nav">          
+          <ul>
+            <li><a href="{% url 'index' %}" ><i class="fa fa-home fa-fw"></i>Home</a></li>
+            <li><a href="{% url 'profile' %}"><i class="fa fa-bars fa-fw"></i>Profile</a></li>
+            <li><a href="{% url 'student_submit' %}" ><i class="fa fa-chart-line fa-fw"></i>Submit Exam</a></li>
+            <li><a href="{% url 'evaluate' %}" class="active"><i class="fa fa-chart-line fa-fw"></i>Score</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="fa fa-eject"></i>Sign Out</a></li>            
+          </ul>  
+        </nav>
+      </div>
+      <div style="background-image: url('{% static 'images/etherium.gif' %}'); 
+       background-size: 800px auto; 
+       background-position: left 700px center; 
+       background-repeat: no-repeat; 
+       height: 100vh;" class="templatemo-content col-1 light-gray-bg">
+           
+        <div class="templatemo-top-nav-container">
+          <div class="row">
+            <nav class="templatemo-top-nav col-lg-12 col-md-12">
+              <ul class="text-uppercase">
+                <h2 style="font-size: 24px; font-weight: 600; text-align: center;" class="text-uppercase">EduConnect</h2>
+              </ul>  
+            </nav> 
+          </div>
+        </div>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <!-- Form Start -->
+                <div style="background-color: white; margin-top: 50px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" class="card">
+                  <div class="card-body">
+                    <h5 class="card-title" style="font-size: 1.5rem; font-weight: bold; text-align: center;">Answer Key List</h5>
+                    <!-- Table for displaying subjects and actions -->
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Subject</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for answer_key in answer_keys %}
+                          <tr>
+                            <td>{{ answer_key.subject }}</td>
+                            <td>
+                              <form method="post" action="{% url 'evaluate_answer_key' answer_key.subject %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success">Evaluate</button>
+                              </form>
+                            </td>
+                          </tr>
+                        {% empty %}
+                          <tr>
+                            <td colspan="2" class="text-center">No Answer Keys Uploaded</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!-- Score Card -->
+        <div id="scoreCard" style="display: none; 
+        position: fixed; 
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); 
+        width: 300px; 
+        padding: 20px; 
+        background: white; 
+        border-radius: 10px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        z-index: 1000;">
+<h4 style="text-align: center;">Score Details</h4>
+<p style="text-align: center; font-size: 1.2rem;">
+Your Percentage: <strong id="percentageDisplay">{{ overall_percentage }}</strong>%
+</p>
+<p style="text-align: center; font-size: 1.2rem;">
+Your Total Score: <strong id="scoreDisplay">{{ total_score }}</strong> out of 100
+</p>
+
+<!-- Display Individual Scores -->
+<div style="text-align: center; font-size: 1.2rem;">
+<h5>Individual Scores:</h5>
+{% for question_number, score in individual_scores %}
+<p>Question {{ question_number }}: <strong>{{ score }}</strong> marks</p>
+{% endfor %}
+</div>
+
+<button onclick="closeScoreCard()" style="display: block; 
+                        margin: 20px auto; 
+                        padding: 10px 20px; 
+                        background-color: #dc3545; 
+                        color: white; 
+                        border: none; 
+                        border-radius: 5px; 
+                        cursor: pointer;">Close</button>
+</div>
+
+       
+        <footer class="text-right" style="position: absolute; bottom: 20px; right: 20px; color: azure;">
+          <p>Copyright &copy; 2024 EduConnect | All Rights Reserved</p>
+        </footer>         
+      </div>
+    </div>
+    
+    <!-- JS -->
+    <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>    
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script> 
+    <script src="https://www.google.com/jsapi"></script> 
+    
+    <script type="text/javascript" src="{% static 'js/templatemo-script.js' %}"></script>      
+    <script>
+      // Function to close the score card
+      function closeScoreCard() {
+        document.getElementById('scoreCard').style.display = 'none';
+      }
+
+      // Display the score card
+      const similarityScore = {{ overall_percentage|default:"0" }};
+      if (similarityScore > 0) {
+        document.getElementById('percentageDisplay').textContent = similarityScore;
+        
+        // Show the score card
+        document.getElementById('scoreCard').style.display = 'block';
+      }
+    </script>
+  </body>
+</html>

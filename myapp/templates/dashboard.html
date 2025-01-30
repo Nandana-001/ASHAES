@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <title>Smart Learn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/templatemo-style.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>  
+    <div class="templatemo-flex-row">
+      <div class="templatemo-sidebar">
+        <header class="templatemo-site-header">
+          <div class="square"></div>
+          <h1>Teacher Dashboard</h1>
+        </header>
+        <div class="profile-photo-container">
+          <img style="padding-left: 23px;" src="{% static 'images/icon.png' %}" alt="Profile Photo" class="img-responsive">  
+        </div>      
+        
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="templatemo-left-nav">          
+          <ul>
+            <li><a href="{% url 'teacher_home' %}"><i class="fa fa-home fa-fw"></i>Home</a></li>
+            <li><a href="{% url 'teacher_dashboard' %}" class="active"><i class="fa fa-bars fa-fw"></i>Dashboard</a></li>
+            <li><a href="{% url 'answerkey' %}"><i class="fa fa-chart-line fa-fw"></i>Answerkey Upload</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="fa fa-eject"></i>Sign Out</a></li>         
+          </ul>  
+        </nav>
+      </div>
+      
+      <div class="templatemo-content col-1 light-gray-bg">
+        <div class="templatemo-top-nav-container">
+          <div class="row">
+            <nav class="templatemo-top-nav col-lg-12 col-md-12">
+              <ul class="text-uppercase">
+                <h2 style="font-size: 24px; font-weight: 600; text-align: center;" class="text-uppercase">EduConnect</h2>
+              </ul>  
+            </nav> 
+          </div>
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div class="container mt-5">
+          <h3 class="text-center" style="margin-top: 30px; font-weight: bold;">Student Scores</h3>
+          
+          <!-- Chart: Bar Chart of Scores and Pie Chart of Percentage Distribution -->
+          <div class="row justify-content-center">
+            <!-- Bar Chart on the left -->
+            <div class="col-md-6">
+              <canvas id="scoreChart" style="height: 400px;"></canvas>
+            </div>
+
+            <!-- Pie Chart on the right -->
+            <div class="col-md-6">
+              <canvas id="percentageDistributionChart" style="height: 400px;"></canvas>
+            </div>
+          </div>
+
+          <div class="table-responsive" style="margin-top: 20px;">
+            <table class="table table-striped table-hover">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Student Name</th>
+                  <th>Subject</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for score in scores %}
+                <tr>
+                  <td>{{ score.student.username }}</td>
+                  <td>{{ score.subject }}</td>
+                  <td>{{ score.percentage }}%</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="3" class="text-center">No scores available</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <footer class="text-right" style="position: absolute; bottom: 20px; right: 20px; color: azure;">
+          <p>Copyright &copy; 2024 EduConnect | All Rights Reserved</p>
+        </footer>         
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>    
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script> 
+    <script src="https://www.google.com/jsapi"></script>     
+    <script type="text/javascript" src="{% static 'js/templatemo-script.js' %}"></script>      
+
+    <script>
+      // Prepare data for the bar chart
+      const labels = [{% for score in scores %}'{{ score.student.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+      const data = {
+        labels: labels,
+        datasets: [{
+          label: 'Student Scores (%)',
+          data: [{% for score in scores %}{{ score.percentage }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      };
+
+      const config = {
+        type: 'bar',
+        data: data,
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      };
+
+      // Render the bar chart
+      const scoreChart = new Chart(
+        document.getElementById('scoreChart'),
+        config
+      );
+
+      // Prepare data for the pie chart (Percentage distribution)
+      const percentageLabels = ["90-100%", "80-89%", "70-79%", "Below 70%"];
+      const percentageData = [0, 0, 0, 0];
+
+      {% for score in scores %}
+        {% if score.percentage >= 90 %}
+          percentageData[0] += 1;
+        {% elif score.percentage >= 80 %}
+          percentageData[1] += 1;
+        {% elif score.percentage >= 70 %}
+          percentageData[2] += 1;
+        {% else %}
+          percentageData[3] += 1;
+        {% endif %}
+      {% endfor %}
+
+      const pieData = {
+        labels: percentageLabels,
+        datasets: [{
+          label: 'Percentage Distribution',
+          data: percentageData,
+          backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(255, 159, 64, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+          borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 159, 64, 1)', 'rgba(153, 102, 255, 1)'],
+          borderWidth: 1
+        }]
+      };
+
+      const pieConfig = {
+        type: 'pie',
+        data: pieData,
+        options: {
+          responsive: true,
+        }
+      };
+
+      // Render the pie chart
+      const percentageDistributionChart = new Chart(
+        document.getElementById('percentageDistributionChart'),
+        pieConfig
+      );
+    </script>
+
+  </body>
+</html>

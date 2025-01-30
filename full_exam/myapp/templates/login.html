@@ -1,0 +1,301 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 60px;
+        }
+
+        .title-bar {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 24px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 50px auto;
+            animation: fadeIn 1.5s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .teacher-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(to right, #66a6ff, #ff0000);
+            color: white;
+            width:130px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .teacher-button:hover {
+            transform: scale(1.05);
+        }
+
+        .form-container {
+            width: 60%;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        form.active {
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #66a6ff;
+            box-shadow: 0 0 5px rgba(102, 166, 255, 0.8);
+        }
+
+        button {
+            background: linear-gradient(to right, #66a6ff, #ff0000);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .switch {
+            margin-top: 15px;
+            color: #66a6ff;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+
+        .image-container {
+            width: 30%;
+            padding: 10px;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .teacher-login-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .teacher-login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1.5s;
+        }
+
+        .teacher-login-card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .teacher-login-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .teacher-login-card button {
+            background: linear-gradient(to right, #66a6ff, #ff0000);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .teacher-login-card button:hover {
+            transform: scale(1.05);
+        }
+
+        .teacher-login-container .switch {
+            margin-top: 15px;
+            color: #66a6ff;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Bar -->
+    <div class="title-bar">
+        EduConnect
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Teacher Button -->
+        <button class="teacher-button" id="teacher-login-btn">Teacher Login</button>
+
+        <div class="image-container">
+            <img src="{% static 'login.png' %}" alt="Login Image">
+        </div>
+        
+        <div class="form-container">
+            <h2 id="form-title">Student Login</h2>
+
+            <!-- Student Registration Form -->
+            <form id="register-form" method="POST" action="{% url 'student_registration' %}">
+            {% csrf_token %}
+                <input type="text" name="full_name" placeholder="Full name" required>
+                <input type="text" name="roll_no" placeholder="Roll no" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit">Register</button>
+            </form>
+
+            <!-- Student Login Form (make sure it's initially visible by adding 'active' class) -->
+            <form id="login-form" method="POST" action="{% url 'student_login' %}" class="active">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button id="login-button" type="submit">Login</button>
+            </form>
+
+            <div class="switch" id="toggle-form">Don't have an account? Register here</div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between forms
+        const registerForm = document.getElementById('register-form');
+        const loginForm = document.getElementById('login-form');
+        const toggleForm = document.getElementById('toggle-form');
+        const formTitle = document.getElementById('form-title');
+        const teacherLoginBtn = document.getElementById('teacher-login-btn');
+
+        toggleForm.addEventListener('click', () => {
+            if (registerForm.classList.contains('active')) {
+                registerForm.classList.remove('active');
+                loginForm.classList.add('active');
+                formTitle.textContent = 'Student Login';
+                toggleForm.textContent = "Don't have an account? Register here";
+            } else {
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                formTitle.textContent = 'Student Registration';
+                toggleForm.textContent = 'Already have an account? Login here';
+            }
+        });
+
+        teacherLoginBtn.addEventListener('click', () => {
+            window.location.href = '/teacher_login/';
+        });
+
+        // Save the username in sessionStorage on login
+        const loginButton = document.getElementById('login-button');
+        loginButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent form submission for demonstration
+
+            const username = loginForm.querySelector('input[name="username"]').value;
+            sessionStorage.setItem('username', username);
+
+            console.log(`Username saved in sessionStorage: ${username}`);
+            loginForm.submit(); // Remove preventDefault in production
+        });
+
+        // Retrieve saved username
+        const savedUsername = sessionStorage.getItem('username');
+        if (savedUsername) {
+            console.log(`Welcome back, ${savedUsername}`);
+        }
+    </script>
+</body>
+</html>

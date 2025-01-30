@@ -1,0 +1,1 @@
+A compiler is a computer program that translates source code into a machine language that a computer can understand and execute.

@@ -1,0 +1,4 @@
+1. An operating system manages hardware and software resources and provides services to applications 
+2. Virtual memory uses disk space as an extension of RAM for running larger programs
+3. A deadlock is a state where processes wait indefinitely for resources held by others
+4. The scheduler decides the order in which processes run

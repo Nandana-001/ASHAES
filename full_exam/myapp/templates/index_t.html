@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
+    <title>Smart Learn</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/templatemo-style.css' %}" rel="stylesheet">
+  </head>
+  <body>  
+    <div class="templatemo-flex-row">
+      <div class="templatemo-sidebar">
+        <header class="templatemo-site-header">
+          <div class="square"></div>
+          <h1>Teacher Dashboard</h1>
+        </header>
+        <div class="profile-photo-container">
+          <img style="padding-left: 23px;" src="{% static 'images/icon.png' %}" alt="Profile Photo" class="img-responsive">  
+        </div>      
+        
+        <div class="mobile-menu-icon">
+            <i class="fa fa-bars"></i>
+        </div>
+        <nav class="templatemo-left-nav">          
+          <ul>
+            <li><a href="{% url 'teacher_home' %}" class="active"><i class="fa fa-home fa-fw"></i>Home</a></li>
+            <li><a href="{% url 'teacher_dashboard' %}"><i class="fa fa-bars fa-fw"></i>Dashboard</a></li>
+            <li><a href="{% url 'answerkey' %}"><i class="fa fa-chart-line fa-fw"></i>Answerkey Upload</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="fa fa-eject"></i>Sign Out</a></li>            
+          </ul>  
+        </nav>
+      </div>
+      <div style="background-image: url('{% static 'images/etherium.gif' %}'); 
+       background-size: 800px auto; 
+       background-position: left 700px center; 
+       background-repeat: no-repeat; 
+       height: 100vh;"
+
+           class="templatemo-content col-1 light-gray-bg">
+           
+        <div class="templatemo-top-nav-container">
+          <div class="row">
+            <nav class="templatemo-top-nav col-lg-12 col-md-12">
+              <ul class="text-uppercase">
+                <h2 style="font-size: 24px; font-weight: 600; text-align: center;" class="text-uppercase">EduConnect</h2>
+              </ul>  
+            </nav> 
+          </div>
+        </div>
+        <div class="container mt-5">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <!-- Card Start -->
+              <div style="background-color: white; margin-top: 50px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" class="card">
+                <img src="{% static 'images/learn.png' %}" class="card-img-top" alt="Ethereum"
+                     style="border-bottom: 2px solid #eee; height: 200px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title" style="font-size: 1.5rem; font-weight: bold;">Overview</h5>
+                  <p class="card-text" style="font-size: 2rem; color: #070707;">
+                    This project aims to revolutionize the evaluation process of handwritten answer scripts by leveraging cutting-edge deep learning technologies. 
+                    By integrating hybrid CNN-LSTM and CNN-GRU models, the system will accurately extract features and classify handwritten answers, ensuring efficiency and fairness in assessments. A user-friendly web application, built with Django, will streamline the evaluation process, enabling seamless interactions for teachers and students alike.
+                  </p>
+                </div>
+              </div>
+              <!-- Card End -->
+            </div>
+          </div>
+        </div>
+        
+       
+        <footer class="text-right" style="position: absolute; bottom: 20px; right: 20px; color: azure;">
+          <p>Copyright &copy; 2024 EduConnect| All Rights Reserved</p>
+        </footer>         
+      </div>
+    </div>
+    
+    <!-- JS -->
+    <script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>    
+    <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}"></script> 
+    <script src="https://www.google.com/jsapi"></script> 
+    
+    <script type="text/javascript" src="{% static 'js/templatemo-script.js' %}"></script>      
+
+  </body>
+</html>
